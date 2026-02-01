@@ -1,0 +1,128 @@
+'use client'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { CartResponse } from "../types/cart-response";
+import deleteCartItem from "../services/cart/delete-cart-item";
+import toast from "react-hot-toast";
+import updateCartItem from "../services/cart/update-cart-item";
+import Image from "next/image";
+export default function Cart() {
+  const queryClient = useQueryClient()
+  const { data: cartData, isLoading, isError } = useQuery<CartResponse>({
+    queryKey: ['get-cart'],
+    queryFn: async () => {
+      const response = await fetch('/api/cart');
+      const payload = await response.json();
+      return payload
+    }
+  })
+  // delete item
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { mutate: delCartItem , isPending } = useMutation({
+    mutationFn: deleteCartItem,
+    onSuccess: () => {
+      toast.success('Product Deleted')
+      queryClient.invalidateQueries({
+        queryKey:['get-cart']
+      })
+    },
+    onError: () => {
+      toast.error('error')
+    },
+  })
+  // update item
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { mutate: updCartItem  , isPending:updatePending} = useMutation({
+    mutationFn: updateCartItem,
+    onSuccess: () => {
+      toast.success('Product Update')
+      queryClient.invalidateQueries({
+        queryKey:['get-cart']
+      })
+    },
+    onError: () => {
+      toast.error('error')
+    },
+  })
+  function handleUpdate(productId: string, count: number) {
+    updCartItem({ productId, count })
+  }
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center">
+        <div className="animate-spin inline-block w-8 h-8 border-[3px] border-current border-t-transparent text-neutral-primary-soft rounded-full" role="status" aria-label="loading">
+          <span className="sr-only">Loading...</span>
+        </div>
+      </div>
+    )
+  }
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center">
+        <p className="text-red-500">error.....</p>
+      </div>
+    )
+  }
+  return (
+    <>
+      <div className="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
+        <table className="w-full text-sm text-left rtl:text-right text-body">
+          <thead className="text-sm text-body bg-neutral-secondary-medium border-b border-default-medium">
+            <tr>
+              <th scope="col" className="px-16 py-3">
+                <span className="sr-only">Image</span>
+              </th>
+              <th scope="col" className="px-6 py-3 font-medium">
+                Product
+              </th>
+              <th scope="col" className="px-6 py-3 font-medium">
+                Qty
+              </th>
+              <th scope="col" className="px-6 py-3 font-medium">
+                Price
+              </th>
+              <th scope="col" className="px-6 py-3 font-medium">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {cartData?.data.products.map((product) => {
+              return (
+                <>
+              <tr key={product._id} className="bg-neutral-primary-soft border-b border-default hover:bg-neutral-secondary-medium">
+                <td className="p-4">
+                  <Image src={product.product.imageCover} width={100} height={100} className="w-16 md:w-24 max-w-full max-h-full" alt="Apple Watch" />
+                </td>
+                <td className="px-6 py-4 font-semibold text-heading">
+                  {product.product.title}
+                </td>
+                <td className="px-6 py-4">
+                  <form className="max-w-xs mx-auto">
+                    <label htmlFor="counter-input-1" className="sr-only">Choose quantity:</label>
+                    <div className="relative flex items-center">
+                      <button onClick={()=> { handleUpdate(product.product._id , product.count-1)}} type="button" id="decrement-button-1" data-input-counter-decrement="counter-input-1" className="flex items-center justify-center text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary rounded-full text-sm focus:outline-none h-6 w-6">
+                        <svg className="w-3 h-3 text-heading" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width={24} height={24} fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14" /></svg>
+                      </button>
+                      <span id="counter-input-1" data-input-counter className="shrink-0 mx-3 text-heading border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-10 text-center">{product.count}</span>
+                      <button onClick={()=> { handleUpdate(product.product._id , product.count+1)}}  type="button" id="increment-button-1" data-input-counter-increment="counter-input-1" className="flex items-center justify-center text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary rounded-full text-sm focus:outline-none h-6 w-6">
+                        <svg className="w-3 h-3 text-heading" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width={24} height={24} fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14m-7 7V5" /></svg>
+                      </button>
+                    </div>
+                  </form>
+                </td>
+                <td className="px-6 py-4 font-semibold text-heading">
+                  {product.price} EGP
+                </td>
+                <td className="px-6 py-4">
+                  <span onClick={() => delCartItem(product.product._id)} className="font-medium text-fg-danger hover:underline">Remove</span>
+                </td>
+              </tr>
+                </>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </>
+  )
+}
