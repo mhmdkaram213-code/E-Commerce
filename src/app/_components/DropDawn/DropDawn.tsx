@@ -10,8 +10,10 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from 'next/link'
-
-export function DropdownMenuBasic({ logOut }) {
+type DropdownMenuBasicProps = {
+  logOut: () => void
+}
+export function DropdownMenuBasic({ logOut } : DropdownMenuBasicProps) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
