@@ -7,5 +7,5 @@ export async function getAccessToken() {
         token : authToken,
         secret: process.env.NEXTAUTH_SECRET!
     })
-    return token?.token
+    return token?.token as string | null
 }

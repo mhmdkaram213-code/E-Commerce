@@ -11,7 +11,8 @@ declare module "next-auth" {
     token:string
   }
   interface Session {
-    user: UserResponse
+    user: UserResponse ,
+    accessToken: string
   }
 }
 declare module "next-auth/jwt" {

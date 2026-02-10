@@ -1,19 +1,29 @@
 'use client'
-import logo from '../../../assets/freshcart-logo.svg'
+import { CartResponse } from '@/app/types/cart-response'
+import { WishListResponse } from '@/app/types/wishListInterface'
+import { useQuery } from '@tanstack/react-query'
 import { signOut, useSession } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
+import logo from '../../../assets/freshcart-logo.svg'
 import { DropdownMenuBasic } from '../DropDawn/DropDawn'
-import { useQuery } from '@tanstack/react-query'
-import { CartResponse } from '@/app/types/cart-response'
 export default function Navbar() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: cartData, isLoading, isError } = useQuery<CartResponse>({
     queryKey: ['get-cart'],
     queryFn: async () => {
       const response = await fetch('/api/cart');
+      const payload = await response.json();
+      return payload
+    }
+  })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data: wishListData, isLoading: isWishListLoading, isError: isWishListError } = useQuery<WishListResponse>({
+    queryKey: ['get-wishList'],
+    queryFn: async () => {
+      const response = await fetch('/api/wishList');
       const payload = await response.json();
       return payload
     }
@@ -42,9 +52,9 @@ export default function Navbar() {
   return (
     <nav className="bg-gray-300 py-2">
       <div className="max-w-7xl flex flex-wrap md:flex-nowrap md:gap-16 items-center justify-between mx-auto p-4">
-        <a href="https://flowbite.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
+        <Link href={'/'} className="flex items-center space-x-3 rtl:space-x-reverse">
           <Image src={logo} alt='fresh cart' width={200} height={50} />
-        </a>
+        </Link>
         <button onClick={toggleNav} data-collapse-toggle="navbar-default" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-body rounded-base md:hidden hover:bg-neutral-secondary-soft hover:text-heading focus:outline-none focus:ring-2 focus:ring-neutral-tertiary" aria-controls="navbar-default" aria-expanded="false">
           <span className="sr-only">Open main menu</span>
           <svg className="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width={24} height={24} fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeWidth={2} d="M5 7h14M5 12h14M5 17h14" /></svg>
@@ -59,14 +69,30 @@ export default function Navbar() {
           </ul>
           <ul className="font-medium flex flex-col justify-center items-center p-4 md:p-0 rounded-base bg-neutral-secondary-soft md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-neutral-primary">
             {status == 'authenticated' ? <>
-              <li>HI, {session?.user?.name}</li>
+              <li>Hi, {session?.user?.name.split(' ').splice(0 , 1).join(' ')}</li>
               <li className='relative'>
                 <Link href="/cart">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                   </svg>
                 </Link>
-                <span className='bg-green-600 text-white flex justify-center items-center absolute -top-4 start-2 w-6.25 h-6.25 rounded-full'>{cartData?.numOfCartItems}</span>
+                {cartData && cartData?.numOfCartItems > 0 && (
+                  <span className='bg-green-600 text-white flex justify-center items-center absolute -top-4 start-2 w-6.25 h-6.25 rounded-full'>
+                    {cartData?.numOfCartItems}
+                  </span>
+                )}
+              </li>
+              <li className='relative'>
+                <Link href="/wishList">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                  </svg>
+                </Link>
+                {wishListData && wishListData.count > 0 && (
+                  <span className='bg-green-600 text-white flex justify-center items-center absolute -top-4 start-2 w-6.25 h-6.25 rounded-full'>
+                    {wishListData.count}
+                  </span>
+                )}
               </li>
               {/* <li onClick={logOut} className="cursor-pointer hover:text-red-500 hover:underline ">Log Out</li> */}
               <DropdownMenuBasic logOut={logOut} />

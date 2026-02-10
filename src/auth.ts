@@ -28,7 +28,9 @@ export const authOptions: NextAuthOptions = {
                 if ('token' in payload) {
                     return {
                         id: payload.user.email,
-                        user: payload.user,
+                        user: {
+                            ...payload.user,
+                        },
                         token: payload.token
                     }
                 }
@@ -48,6 +50,7 @@ export const authOptions: NextAuthOptions = {
         },
         session: ({ session , token }) => {
             session.user = token.user as typeof session.user
+            session.accessToken = token.accessToken as string
             return session
         }
     }

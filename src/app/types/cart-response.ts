@@ -47,3 +47,8 @@ export interface SubCategory {
     slug: string;
     category: string
 }
+export type shipping = {
+    details: string,
+    phone: string,
+    city: string
+}

@@ -10,7 +10,8 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-export default function Register() {
+import Link from "next/link";
+export default function Login() {
   const [isLoading, setIsLoading] = useState(false)
   const SearchParams = useSearchParams()
   const callBackUrl = SearchParams.get('callbackUrl')
@@ -44,7 +45,7 @@ export default function Register() {
     <div className="w-full md:w-3/4 lg:w-1/2 mx-auto p-10 my-10 bg-gray-200 rounded-2xl shadow">
       <h2 className="text-2xl font-bold text-green-600 ">Login Now</h2>
       <form onSubmit={form.handleSubmit(submitForm)}>
-        <div className="flex flex-col justify-center items-center gap-6 mt-4">
+        <div className="flex flex-col justify-center gap-6 mt-4">
           <div className="w-full">
             <Controller
               name="email"
@@ -83,6 +84,7 @@ export default function Register() {
                 </Field>
               )}
             />
+            <Link href={'/forgetPassword'}><span className="text-green-600">Forget Password</span></Link>
           </div>
           <Button type="submit" className="w-full">
             {isLoading ? <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6 animate-spin">
