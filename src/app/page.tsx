@@ -5,7 +5,6 @@ import { ProductItem } from "./types/productinterface";
 export default async function Home() {
   const req = await fetch('https://ecommerce.routemisr.com/api/v1/products')
   const { data: allProduct }: { data: ProductItem[] } = await req.json()
-  console.log(allProduct);
   return (
     <>
       <MainSlider />

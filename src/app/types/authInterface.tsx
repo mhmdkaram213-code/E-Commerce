@@ -1,23 +1,24 @@
 export interface SuccessLogin {
-    message: string
-    user: UserResponse
-    token: string
+    message : string
+    user : UserResponse
+    token : string
 }
 export interface FailLogin {
-    statusMsg: string
-    message: string
+    statusMsg : string
+    message : string
 }
 export interface UserResponse {
+    id: string
     _id: string
-    name: string
-    email: string
-    role: string
     phone: string
+    name : string
+    email : string
+    role : string
 }
 export type Order = {
-    _id: string
-    totalOrderPrice: number
-    paymentMethodType: string
-    isPaid: boolean
-    createdAt: string
+  _id: string
+  totalOrderPrice: number
+  paymentMethodType: string
+  isPaid: boolean
+  createdAt: string
 }
