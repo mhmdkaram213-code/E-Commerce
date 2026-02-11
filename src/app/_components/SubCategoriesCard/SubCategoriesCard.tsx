@@ -16,7 +16,7 @@ export default function SubCategoryCard({
   subCategory: SubCategoryItem
 }) {
   return (
-    <Card className="group flex flex-col h-full overflow-hidden rounded-2xl border hover:shadow-lg transition-all duration-300">
+    <Card className="group flex flex-col items-center justify-center h-full overflow-hidden rounded-2xl border hover:shadow-lg transition-all duration-300">
 
       {/* Clickable Area */}
       <Link

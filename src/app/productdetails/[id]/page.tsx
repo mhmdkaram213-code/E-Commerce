@@ -31,29 +31,29 @@ export default async function Productdetails(props: myProps) {
         </div>
         <div className="md:col-span-2">
           <Card className="relative w-full p-10">
-              <CardHeader className="space-y-2">
-                <CardAction>
-                  <Badge variant="secondary">{singleProduct.brand.name}</Badge>
-                </CardAction>
-                <CardTitle>
-                  {singleProduct.title.split(" ").slice(0, 2).join(" ")}
-                </CardTitle>
-                <CardDescription className="flex justify-between  items-center">
-                  {singleProduct.description}
-                </CardDescription>
-                {/* Price & Rating */}
-                <CardDescription className="flex justify-between items-center">
-                  <div className="flex justify-between items-center" >
-                    <p className="">{singleProduct.price} EGP</p>
-                    <p className="flex items-center gap-1">
-                      {singleProduct.ratingsAverage}
-                      <span>⭐</span>
-                    </p>
-                  </div>
-                </CardDescription>
-              </CardHeader>
+            <CardHeader className="space-y-2">
+              <CardAction>
+                <Badge variant="secondary">{singleProduct.brand.name}</Badge>
+              </CardAction>
+              <CardTitle>
+                {singleProduct.title.split(" ").slice(0, 2).join(" ")}
+              </CardTitle>
+              <CardDescription className="flex justify-between  items-center">
+                {singleProduct.description}
+              </CardDescription>
+              {/* Price & Rating */}
+              <CardDescription className="flex justify-between items-center text-sm font-medium text-gray-700">
+                <span className="text-green-600 font-bold">
+                  {singleProduct.price} EGP
+                </span>
+                <span className="flex items-center gap-1">
+                  {singleProduct.ratingsAverage}
+                  <span>⭐</span>
+                </span>
+              </CardDescription>
+            </CardHeader>
 
-             <AddBtn productId={singleProduct._id} />
+            <AddBtn productId={singleProduct._id} />
           </Card>
         </div>
       </div>

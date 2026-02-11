@@ -13,7 +13,7 @@ import Link from "next/link"
 
 export default function BrandCard({ brand }: { brand: BrandsItem }) {
   return (
-    <Card className="group flex flex-col h-full overflow-hidden rounded-2xl border hover:shadow-lg transition-all duration-300">
+    <Card className="group flex flex-col items-center justify-center h-full overflow-hidden rounded-2xl border hover:shadow-lg transition-all duration-300">
 
       {/* Clickable Area */}
       <Link href={`/BrandDetails/${brand._id}`} className="flex-1">
