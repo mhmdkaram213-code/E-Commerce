@@ -11,6 +11,7 @@ declare module "next-auth" {
     token:string
   }
   interface Session {
+    id: string,
     user: UserResponse ,
     accessToken: string
   }
@@ -19,7 +20,7 @@ declare module "next-auth/jwt" {
   /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface JWT extends User {
-    
+    id: string,
     /** OpenID ID Token */
   }
 }

@@ -1,6 +1,7 @@
 import { NextAuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { FailLogin, SuccessLogin } from './app/types/authInterface';
+import {jwtDecode} from 'jwt-decode';
 export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/login',
@@ -25,8 +26,11 @@ export const authOptions: NextAuthOptions = {
         });
         const payload: FailLogin | SuccessLogin = await res.json();
         if ('token' in payload) {
+          const decoded = jwtDecode(payload.token as string) as { id: string };
+          const userId = decoded.id;
+          console.log(decoded);
           return {
-            id: payload.user.email,
+            id: userId,
             user: {
               ...payload.user,
             },
@@ -43,12 +47,13 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.user = user.user;
         token.token = user.token;
+        token.id = user.id;
       }
       return token;
     },
     session: ({ session, token }) => {
       session.user = token.user as typeof session.user;
-      session.accessToken = token.accessToken as string;
+      session.id = token.id
       return session;
     },
   },
